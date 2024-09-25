@@ -50,8 +50,6 @@ $  docker build -t jenkins-operator:2.462 .
 5. Chạy image đã build ở trên với lệnh: 
 
 ```bash
-
-```bash
 $  docker run --name jenkins-operator --restart=on-failure --detach --network jenkins --env DOCKER_HOST=tcp://docker:2376 --env DOCKER_CERT_PATH=/certs/client --env DOCKER_TLS_VERIFY=1  --volume jenkins-data:/var/jenkins_home --volume jenkins-docker-certs:/certs/client:ro  --publish 8080:8080 --publish 50000:50000 -v /var/run/docker.sock:/var/run/docker.sock jenkins-operator:2.462
 ```
 
@@ -64,3 +62,10 @@ $ docker logs jenkins-operator
 
 8. Sau khi jenkins hoàn thành tải các plugin cho bạn nó sẽ bắt bạn tạo 1 root account, nên đặt username là root để dễ phân biệt với các account khác sau này.
 
+9. Tải thêm 1 số plugin để tiến hành CICD: 
+  a.	Amazon ECR plugin: dùng để để cridentical vào ECR của AWS … nhiều tac dụng hơn mà e chưa biết hết.
+  b.	Docker Pipeline: plugin này cho mình mấy cái method để viết trong pipeline xong nó compiler ra command docker
+  c.	SSH Agent Plugin: plugin này cho mình method  sshagent(cridentialId) để ssh tới bất kì đâu vd: instance ec2
+  d.	Config File Provider Plugin: plugin này cho mình method và pipeline để đọc/ghi file env vào destination (ec2, git repo dc Jenkins clone về).
+  e.	Strict Crumb Issuer Plugin: plubgin disable check session id mỗi lần call api sẽ hay bị lỗi 403 fix bằng plungin này.
+  f.	Role-based Authorization Strategy: plugin này dung để phân quyền trong hệ thông jenkins
