@@ -69,3 +69,4 @@ $ docker logs jenkins-operator
   d.	Config File Provider Plugin: plugin này cho mình method và pipeline để đọc/ghi file env vào destination (ec2, git repo dc Jenkins clone về).
   e.	Strict Crumb Issuer Plugin: plubgin disable check session id mỗi lần call api sẽ hay bị lỗi 403 fix bằng plungin này.
   f.	Role-based Authorization Strategy: plugin này dung để phân quyền trong hệ thông jenkins
+  g.  Stage View: show các stage của jenkinsfile khi build 
