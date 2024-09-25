@@ -66,9 +66,15 @@ $ docker logs jenkins-operator
 9. Tải thêm 1 số plugin để tiến hành CICD: 
 
   a.	Amazon ECR plugin: dùng để để cridentical vào ECR của AWS … nhiều tac dụng hơn mà e chưa biết hết.
+
   b.	Docker Pipeline: plugin này cho mình mấy cái method để viết trong pipeline xong nó compiler ra command docker
+ 
   c.	SSH Agent Plugin: plugin này cho mình method  sshagent(cridentialId) để ssh tới bất kì đâu vd: instance ec2
+  
   d.	Config File Provider Plugin: plugin này cho mình method và pipeline để đọc/ghi file env vào destination (ec2, git repo dc Jenkins clone về).
+  
   e.	Strict Crumb Issuer Plugin: plubgin disable check session id mỗi lần call api sẽ hay bị lỗi 403 fix bằng plungin này.
+ 
   f.	Role-based Authorization Strategy: plugin này dung để phân quyền trong hệ thông jenkins
+  
   g.  Stage View: show các stage của jenkinsfile khi build 
