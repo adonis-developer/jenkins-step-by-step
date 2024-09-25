@@ -24,6 +24,7 @@ $ docker run --name jenkins-docker --rm --detach --privileged --network jenkins 
   a. Tạo 1 Dockerfile với nội dung:   
 ```bash
     FROM jenkins/jenkins:2.462.2-jdk17
+    USER root
     RUN apt-get update && apt-get install -y lsb-release
     RUN curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc \
     https://download.docker.com/linux/debian/gpg
@@ -63,6 +64,7 @@ $ docker logs jenkins-operator
 8. Sau khi jenkins hoàn thành tải các plugin cho bạn nó sẽ bắt bạn tạo 1 root account, nên đặt username là root để dễ phân biệt với các account khác sau này.
 
 9. Tải thêm 1 số plugin để tiến hành CICD: 
+
   a.	Amazon ECR plugin: dùng để để cridentical vào ECR của AWS … nhiều tac dụng hơn mà e chưa biết hết.
   b.	Docker Pipeline: plugin này cho mình mấy cái method để viết trong pipeline xong nó compiler ra command docker
   c.	SSH Agent Plugin: plugin này cho mình method  sshagent(cridentialId) để ssh tới bất kì đâu vd: instance ec2
