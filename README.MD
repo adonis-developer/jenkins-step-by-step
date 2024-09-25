@@ -15,17 +15,13 @@
 $ docker network create jenkins
 ```
 3. Chạy docker:bind -> dùng nó vì nó sẽ dùng chính docker engine cho jenkins khi build 
+
 ```bash
-$ docker run --name jenkins-docker --rm --detach ^
-  --privileged --network jenkins --network-alias docker ^
-  --env DOCKER_TLS_CERTDIR=/certs ^
-  --volume jenkins-docker-certs:/certs/client ^
-  --volume jenkins-data:/var/jenkins_home ^
-  --publish 2376:2376 ^
-  docker:dind
+$ docker run --name jenkins-docker --rm --detach --privileged --network jenkins --network-alias docker --env DOCKER_TLS_CERTDIR=/certs --volume jenkins-docker-certs:/certs/client --volume jenkins-data:/var/jenkins_home --publish 2376:2376 docker:dind
 ```
 4. Tùy chỉnh hình ảnh Docker Jenkins chính thức bằng cách thực hiện hai bước sau:
-    a. Tạo 1 Dockerfile với nội dung:   
+    
+  a. Tạo 1 Dockerfile với nội dung:   
 ```bash
     FROM jenkins/jenkins:2.462.2-jdk17
     RUN apt-get update && apt-get install -y lsb-release
@@ -38,29 +34,25 @@ $ docker run --name jenkins-docker --rm --detach ^
     RUN apt-get update && apt-get install -y docker-ce-cli
     RUN jenkins-plugin-cli --plugins "docker-workflow"
 ```
-    Dockerfile này sẽ tạo ra 1 image jenkins đã cài sẵn các plugin docker (plugin để dùng các lệnh pipeline trong Jenkinsfile)
+    Dockerfile này sẽ tạo ra 1 image jenkins đã cài sẵn các plugin docker
+     (plugin để dùng các lệnh pipeline trong Jenkinsfile)
     vd: 
-        dockerImagePrivate = docker.build("${ecrRegistryPri}:${env.IMAGE_TAG}", "--target ${env.ENV_CODE} --label stage=build .")
-        docker.withRegistry("https://" + ecrRegistryPri, ecrCredential) {  
-            dockerImagePrivate.push()
-        }
+      docker.build("${ecrRegistryPri}:${env.IMAGE_TAG}", "--target ${env.ENV_CODE} --label stage=build .")
+      docker.withRegistry("https://" + ecrRegistryPri, ecrCredential) {  
+       dockerImagePrivate.push()
+      }
     
-    b. Xây dựng một hình ảnh docker mới từ Dockerfile này và gán cho hình ảnh một tên có ý nghĩa, ví dụ: "jenkins-operator:2.462"
+  b. Xây dựng một hình ảnh docker mới từ Dockerfile này và gán cho hình ảnh một tên có ý nghĩa.
+    ví dụ: "jenkins-operator:2.462"
 ```bash
 $  docker build -t jenkins-operator:2.462 .
 ```
 5. Chạy image đã build ở trên với lệnh: 
 
 ```bash
-$  docker run --name jenkins-operator --restart=on-failure --detach ^
-  --network jenkins --env DOCKER_HOST=tcp://docker:2376 ^
-  --env DOCKER_CERT_PATH=/certs/client --env DOCKER_TLS_VERIFY=1 ^
-  --volume jenkins-data:/var/jenkins_home ^
-  --volume jenkins-docker-certs:/certs/client:ro ^
-  --publish 8080:8080 --publish 50000:50000 jenkins-operator:2.462
-```
+
 ```bash
-$  docker run --name jenkins-operator --restart=on-failure --detach --network jenkins --env DOCKER_HOST=tcp://docker:2376 --env DOCKER_CERT_PATH=/certs/client --env DOCKER_TLS_VERIFY=1  --volume jenkins-data:/var/jenkins_home --volume jenkins-docker-certs:/certs/client:ro  --publish 8080:8080 --publish 50000:50000 jenkins-operator:2.462
+$  docker run --name jenkins-operator --restart=on-failure --detach --network jenkins --env DOCKER_HOST=tcp://docker:2376 --env DOCKER_CERT_PATH=/certs/client --env DOCKER_TLS_VERIFY=1  --volume jenkins-data:/var/jenkins_home --volume jenkins-docker-certs:/certs/client:ro  --publish 8080:8080 --publish 50000:50000 -v /var/run/docker.sock:/var/run/docker.sock jenkins-operator:2.462
 ```
 
 6. Kiểm tra logs của container mới đc chạy để lấy init password
